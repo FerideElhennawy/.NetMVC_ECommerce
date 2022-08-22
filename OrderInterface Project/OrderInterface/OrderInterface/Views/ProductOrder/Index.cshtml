@@ -1,0 +1,130 @@
+﻿@using OrderInterface.Models;
+@model List<ProductOrder>
+@{
+    ViewBag.Title = "Index";
+}
+
+
+<div class="content-wrapper">
+
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <div class="card">
+            <h5 class="card-header">Order List</h5>
+            <div class="">
+                @*<textarea></textarea>*@
+                <h6 class="danger">@ViewBag.message</h6>
+                <form action="/Order/AddProduct" method="post" role="form">
+                    <div class="form-body">
+                        <div class="form-group">
+                            <select class="form-control" name="ProductID">
+                                <option value="0">Select an item</option>
+                                @foreach (Product item in ViewBag.AllProducts)
+                                {
+                                    <option value="@item.ProductID">@item.PName</option>
+
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <div class="text-right">
+                            <button type="submit" class="btn btn-info">Add To List</button>
+                        </div>
+                    </div>
+
+                </form>
+
+                <div style="float:right;">
+
+                    <input id=demoInput type=number min=1 max=20>
+                    <button onclick="increment()">+</button>
+                    <button onclick="decrement()">-</button>
+                </div>
+            </div>
+            <div class="table-responsive text-nowrap" style="overflow-y:auto;">
+                <table class="table">
+                    <thead>
+                        <tr class="table-dark">
+                            <th>IN CART</th>
+                            <th>PRICE $</th>
+                            <th>QUANTITY</th>
+                            <th>TOTAL</th>
+                            <th>..</th>
+                        </tr>
+
+                    </thead>
+                    <tbody class="table-border-bottom-0">
+
+
+                        @foreach (ProductOrder item in ViewBag.OrderInfo)
+                        {
+                            <tr class="table-default">
+                                <td><i class="fab fa-sketch fa-lg text-warning me-3"></i> <strong>@item.ProductID</strong></td>
+                                <td> ..</td>
+                                <td>..</td>
+                                <td><span class="badge bg-label-primary me-1">..</span></td>
+                                <td><a href="#" class="btn btn-danger rounded">Delete</a></td>
+                            </tr>
+
+                        }
+                        @for (int i = 0; i < 5; i++)
+                        {
+                            <tr class="table-default">
+                                <td><i class="fab fa-sketch fa-lg text-warning me-3"></i> <strong>.....</strong></td>
+                                <td>$</td>
+                                <td>....</td>
+                                <td><span class="badge bg-label-primary me-1">...</span></td>
+                                <td><a href="#" class="btn btn-danger rounded">Delete</a></td>
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+                <h4 class="text-primary">Total</h4>
+            </div>
+        </div>
+        <a class="btn btn-success fa-align-right" href="#">Submit</a>
+
+    </div>
+</div>
+
+@*<div class="card-group mb-5">
+        <div class="card">
+            <img class="card-img-top" src="../assets/img/elements/4.jpg" alt="Card image cap">
+            <div class="card-body">
+                <h5 class="card-title">Card title</h5>
+                <p class="card-text">
+                    This is a wider card with supporting text below as a natural lead-in to additional content. This content is a
+                    little
+                    bit longer.
+                </p>
+            </div>
+            <div class="card-footer">
+                <small class="text-muted">Last updated 3 mins ago</small>
+            </div>
+        </div>
+        <div class="card">
+            <img class="card-img-top" src="../assets/img/elements/5.jpg" alt="Card image cap">
+            <div class="card-body">
+                <h5 class="card-title">Card title</h5>
+                <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
+            </div>
+            <div class="card-footer">
+                <small class="text-muted">Last updated 3 mins ago</small>
+            </div>
+        </div>
+        <div class="card">
+            <img class="card-img-top" src="../assets/img/elements/1.jpg" alt="Card image cap">
+            <div class="card-body">
+                <h5 class="card-title">Card title</h5>
+                <p class="card-text">
+                    This is a wider card with supporting text below as a natural lead-in to additional content. This card has even
+                    longer
+                    content than the first to show that equal height action.
+                </p>
+            </div>
+            <div class="card-footer">
+                <small class="text-muted">Last updated 3 mins ago</small>
+            </div>
+        </div>
+    </div>*@

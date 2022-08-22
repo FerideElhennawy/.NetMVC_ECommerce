@@ -1,0 +1,245 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="MarketDatabaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Order_">
+          <Key>
+            <PropertyRef Name="OrderID" />
+          </Key>
+          <Property Name="OrderID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TotalPrice" Type="decimal" Precision="10" Scale="2" />
+        </EntityType>
+        <EntityType Name="Product">
+          <Key>
+            <PropertyRef Name="ProductID" />
+          </Key>
+          <Property Name="ProductID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Price" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="Barcode" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Quantity" Type="int" />
+          <Property Name="CategoryID" Type="int" />
+        </EntityType>
+        <EntityType Name="ProductOrder">
+          <Key>
+            <PropertyRef Name="ProductOrderID" />
+          </Key>
+          <Property Name="ProductOrderID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="OrderID" Type="int" Nullable="false" />
+          <Property Name="ProductID" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'MarketDatabase.dbo.OrderInfoByProducts' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="OrderInfoByProducts">
+          <Key>
+            <PropertyRef Name="ProductID" />
+            <PropertyRef Name="PName" />
+            <PropertyRef Name="Price" />
+            <PropertyRef Name="OrderID" />
+          </Key>
+          <Property Name="ProductID" Type="int" Nullable="false" />
+          <Property Name="PName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Price" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="OrderID" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_ProductOrder_Order_">
+          <End Role="Order_" Type="Self.Order_" Multiplicity="1" />
+          <End Role="ProductOrder" Type="Self.ProductOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Order_">
+              <PropertyRef Name="OrderID" />
+            </Principal>
+            <Dependent Role="ProductOrder">
+              <PropertyRef Name="OrderID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductOrder_Product">
+          <End Role="Product" Type="Self.Product" Multiplicity="1" />
+          <End Role="ProductOrder" Type="Self.ProductOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="ProductID" />
+            </Principal>
+            <Dependent Role="ProductOrder">
+              <PropertyRef Name="ProductID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="MarketDatabaseModelStoreContainer">
+          <EntitySet Name="Order_" EntityType="Self.Order_" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Product" EntityType="Self.Product" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProductOrder" EntityType="Self.ProductOrder" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OrderInfoByProducts" EntityType="Self.OrderInfoByProducts" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [OrderInfoByProducts].[ProductID] AS [ProductID], 
+    [OrderInfoByProducts].[PName] AS [PName], 
+    [OrderInfoByProducts].[Price] AS [Price], 
+    [OrderInfoByProducts].[OrderID] AS [OrderID]
+    FROM [dbo].[OrderInfoByProducts] AS [OrderInfoByProducts]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_ProductOrder_Order_" Association="Self.FK_ProductOrder_Order_">
+            <End Role="Order_" EntitySet="Order_" />
+            <End Role="ProductOrder" EntitySet="ProductOrder" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductOrder_Product" Association="Self.FK_ProductOrder_Product">
+            <End Role="Product" EntitySet="Product" />
+            <End Role="ProductOrder" EntitySet="ProductOrder" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="MarketDatabaseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Product">
+          <Key>
+            <PropertyRef Name="ProductID" />
+          </Key>
+          <Property Name="ProductID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Price" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="Barcode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Quantity" Type="Int32" />
+          <Property Name="CategoryID" Type="Int32" />
+          <NavigationProperty Name="ProductOrder" Relationship="MarketDatabaseModel.FK_ProductOrder_Product" FromRole="Product" ToRole="ProductOrder" />
+        </EntityType>
+        <EntityContainer Name="MarketDatabaseEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Product" EntityType="Self.Product" />
+          <EntitySet Name="Order_" EntityType="MarketDatabaseModel.Order_" />
+          <EntitySet Name="ProductOrder" EntityType="MarketDatabaseModel.ProductOrder" />
+          <AssociationSet Name="FK_ProductOrder_Order_" Association="MarketDatabaseModel.FK_ProductOrder_Order_">
+            <End Role="Order_" EntitySet="Order_" />
+            <End Role="ProductOrder" EntitySet="ProductOrder" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductOrder_Product" Association="MarketDatabaseModel.FK_ProductOrder_Product">
+            <End Role="Product" EntitySet="Product" />
+            <End Role="ProductOrder" EntitySet="ProductOrder" />
+          </AssociationSet>
+          <EntitySet Name="OrderInfoByProducts" EntityType="MarketDatabaseModel.OrderInfoByProducts" />
+        </EntityContainer>
+        <EntityType Name="Order_">
+          <Key>
+            <PropertyRef Name="OrderID" />
+          </Key>
+          <Property Name="OrderID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TotalPrice" Type="Decimal" Precision="10" Scale="2" />
+          <NavigationProperty Name="ProductOrder" Relationship="MarketDatabaseModel.FK_ProductOrder_Order_" FromRole="Order_" ToRole="ProductOrder" />
+        </EntityType>
+        <EntityType Name="ProductOrder">
+          <Key>
+            <PropertyRef Name="ProductOrderID" />
+          </Key>
+          <Property Name="ProductOrderID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OrderID" Type="Int32" Nullable="false" />
+          <Property Name="ProductID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Order_" Relationship="MarketDatabaseModel.FK_ProductOrder_Order_" FromRole="ProductOrder" ToRole="Order_" />
+          <NavigationProperty Name="Product" Relationship="MarketDatabaseModel.FK_ProductOrder_Product" FromRole="ProductOrder" ToRole="Product" />
+        </EntityType>
+        <Association Name="FK_ProductOrder_Order_">
+          <End Type="MarketDatabaseModel.Order_" Role="Order_" Multiplicity="1" />
+          <End Type="MarketDatabaseModel.ProductOrder" Role="ProductOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Order_">
+              <PropertyRef Name="OrderID" />
+            </Principal>
+            <Dependent Role="ProductOrder">
+              <PropertyRef Name="OrderID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductOrder_Product">
+          <End Type="MarketDatabaseModel.Product" Role="Product" Multiplicity="1" />
+          <End Type="MarketDatabaseModel.ProductOrder" Role="ProductOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="ProductID" />
+            </Principal>
+            <Dependent Role="ProductOrder">
+              <PropertyRef Name="ProductID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="OrderInfoByProducts">
+          <Key>
+            <PropertyRef Name="ProductID" />
+            <PropertyRef Name="PName" />
+            <PropertyRef Name="Price" />
+            <PropertyRef Name="OrderID" />
+          </Key>
+          <Property Name="ProductID" Type="Int32" Nullable="false" />
+          <Property Name="PName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Price" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+          <Property Name="OrderID" Type="Int32" Nullable="false" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="MarketDatabaseModelStoreContainer" CdmEntityContainer="MarketDatabaseEntities">
+          <EntitySetMapping Name="Product">
+            <EntityTypeMapping TypeName="MarketDatabaseModel.Product">
+              <MappingFragment StoreEntitySet="Product">
+                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+                <ScalarProperty Name="PName" ColumnName="PName" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Barcode" ColumnName="Barcode" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Order_">
+            <EntityTypeMapping TypeName="MarketDatabaseModel.Order_">
+              <MappingFragment StoreEntitySet="Order_">
+                <ScalarProperty Name="TotalPrice" ColumnName="TotalPrice" />
+                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProductOrder">
+            <EntityTypeMapping TypeName="MarketDatabaseModel.ProductOrder">
+              <MappingFragment StoreEntitySet="ProductOrder">
+                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+                <ScalarProperty Name="ProductOrderID" ColumnName="ProductOrderID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OrderInfoByProducts">
+            <EntityTypeMapping TypeName="MarketDatabaseModel.OrderInfoByProducts">
+              <MappingFragment StoreEntitySet="OrderInfoByProducts">
+                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="PName" ColumnName="PName" />
+                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
